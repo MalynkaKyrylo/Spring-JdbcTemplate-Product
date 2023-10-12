@@ -1,12 +1,10 @@
-package org.example.app.service.impl;
+package org.example.app.service;
 
-import org.example.app.repository.impl.ContactRepositoryImpl;
-import org.example.app.entity.contact.Contact;
-import org.example.app.exceptions.ContactDataException;
-import org.example.app.service.BaseService;
+import org.example.app.entity.Product;
+import org.example.app.repository.ProductRepository;
+import org.example.app.exceptions.ProductDataException;
 import org.example.app.utils.Constants;
-import org.example.app.utils.validator.IdValidator;
-import org.example.app.utils.validator.PhoneValidator;
+import org.example.app.utils.IdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,30 +12,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Service("contactService")
-public class ContactServiceImpl implements BaseService<Contact> {
+@Service("productService")
+public class ProductService implements BaseService<Product> {
 
     @Autowired
-    Contact contact;
+    Product product;
     @Autowired
-    ContactRepositoryImpl repoImpl;
+    ProductRepository repoImpl;
 
     Map<String, String> errors = new HashMap<>();
 
     @Override
-    public String create(Contact contact) {
-        validateData(contact);
+    public String create(Product product) {
+        validateData(product);
         if (!errors.isEmpty()) {
             try {
-                throw new ContactDataException("Check inputs", errors);
-            } catch (ContactDataException e) {
+                throw new ProductDataException("Check inputs", errors);
+            } catch (ProductDataException e) {
                 return e.getErrors(errors);
             }
         }
 
-        if (repoImpl.create(contact)) {
+        if (repoImpl.create(product)) {
             return Constants.DATA_INSERT_MSG;
         } else {
             return Constants.SMTH_WRONG_MSG;
@@ -46,15 +45,15 @@ public class ContactServiceImpl implements BaseService<Contact> {
 
     @Override
     public String getAll() {
-        Optional<List<Contact>> optional = repoImpl.getAll();
+        Optional<List<Product>> optional = repoImpl.getAll();
         if (optional.isPresent()) {
             AtomicInteger count = new AtomicInteger(0);
             StringBuilder stringBuilder = new StringBuilder();
-            List<Contact> list = optional.get();
-            list.forEach((contact) ->
+            List<Product> list = optional.get();
+            list.forEach((product) ->
                     stringBuilder.append(count.incrementAndGet())
                             .append(") ")
-                            .append(contact.toString())
+                            .append(product.toString())
             );
             return stringBuilder.toString();
         } else return Constants.DATA_ABSENT_MSG;
@@ -65,35 +64,35 @@ public class ContactServiceImpl implements BaseService<Contact> {
         validateId(id);
         if (!errors.isEmpty()) {
             try {
-                throw new ContactDataException("Check inputs", errors);
-            } catch (ContactDataException e) {
+                throw new ProductDataException("Check inputs", errors);
+            } catch (ProductDataException e) {
                 return e.getErrors(errors);
             }
         }
 
-        Optional<Contact> optional = repoImpl.getById(Integer.parseInt(id));
+        Optional<Product> optional = repoImpl.getById(Integer.parseInt(id));
         if (optional.isEmpty()) {
             return Constants.DATA_ABSENT_MSG;
         } else {
-            Contact contact = optional.get();
-            return contact.toString();
+            Product product = optional.get();
+            return product.toString();
         }
     }
 
     @Override
-    public String update(Contact contact) {
-        validateData(contact);
-        validateId(String.valueOf(contact.getId()));
+    public String update(Product product) {
+        validateData(product);
+        validateId(String.valueOf(product.getId()));
         if (!errors.isEmpty()) {
             try {
-                throw new ContactDataException("Check inputs",
+                throw new ProductDataException("Check inputs",
                         errors);
-            } catch (ContactDataException e) {
+            } catch (ProductDataException e) {
                 return e.getErrors(errors);
             }
         }
 
-        if (repoImpl.update(contact)) {
+        if (repoImpl.update(product)) {
             return Constants.DATA_UPDATE_MSG;
         } else {
             return Constants.SMTH_WRONG_MSG;
@@ -105,27 +104,27 @@ public class ContactServiceImpl implements BaseService<Contact> {
         validateId(id);
         if (!errors.isEmpty()) {
             try {
-                throw new ContactDataException("Check inputs", errors);
-            } catch (ContactDataException e) {
+                throw new ProductDataException("Check inputs", errors);
+            } catch (ProductDataException e) {
                 return e.getErrors(errors);
             }
         }
 
-        contact.setId(Integer.parseInt(id));
-        if (repoImpl.delete(contact)) {
+        product.setId(Integer.parseInt(id));
+        if (repoImpl.delete(product)) {
             return Constants.DATA_DELETE_MSG;
         } else {
             return Constants.SMTH_WRONG_MSG;
         }
     }
 
-    private void validateData(Contact contact) {
-        if (contact.getFirstName().isEmpty())
-            errors.put("first name", Constants.INPUT_REQ_MSG);
-        if (contact.getLastName().isEmpty())
-            errors.put("last name", Constants.INPUT_REQ_MSG);
-        if (PhoneValidator.isPhoneValid(contact.getPhone()))
-            errors.put("phone", Constants.PHONE_ERR_MSG);
+    private void validateData(Product product) {
+        if (product.getName().isEmpty())
+            errors.put("name", Constants.INPUT_REQ_MSG);
+        if (Objects.isNull(product.getQuota()))
+            errors.put("quota", Constants.INPUT_REQ_MSG);
+        if (Objects.isNull(product.getPrice()))
+            errors.put("phone", Constants.INPUT_REQ_MSG);
     }
 
     private void validateId(String id) {
