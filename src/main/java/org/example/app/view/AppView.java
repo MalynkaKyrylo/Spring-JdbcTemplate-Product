@@ -25,10 +25,12 @@ public class AppView {
     private void showMenu() {
         System.out.print("""
                 
-                Choose an option
-                -------------------
-                1 - Contacts.
-                2 - Users.
+                ______ MENU ___________
+                1 - Create product.
+                2 - View all products.
+                3 - View product by id.
+                4 - Update product.
+                5 - Delete product.
                 0 - Close the App.
                 """);
     }
