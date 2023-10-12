@@ -26,18 +26,13 @@ CREATE TABLE IF NOT EXISTS products
   PRIMARY KEY (id)
 );
 
-
 INSERT INTO products (name, quota, price) VALUES (?, ?, ?)
-
 
 SELECT * FROM products
 
-
 SELECT * FROM products WHERE id = ?  LIMIT 1
 
-
 UPDATE products SET name = ?, quota = ?, price = ? WHERE id = ?
-
 
 DELETE FROM products WHERE id = ?
 
