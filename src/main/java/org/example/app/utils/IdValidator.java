@@ -1,4 +1,4 @@
-package org.example.app.utils.validator;
+package org.example.app.utils;
 
 public class IdValidator {
 
