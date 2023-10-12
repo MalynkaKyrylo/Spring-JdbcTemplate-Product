@@ -1,9 +1,9 @@
-package org.example.app.view.contact;
+package org.example.app.view;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class ContactReadView {
+public class ProductReadView {
 
     public void getOutput(String output) {
         System.out.println(output);
